@@ -69,15 +69,22 @@ export function mapTriathlonRows(rows: unknown[][]): TriathlonRecord[] {
     .filter((row) => row.length > 0 && row[0] !== undefined && row[0] !== '')
     .map((row) => {
       const r = mapRowToRecord(row, TRIATHLON_SCHEMA);
+      
+      const rawDate = (r.date as string) || '';
+      const datePart = rawDate.split(' ')[0] || '';
+      
+      const durationSec = r.durationSec as number | null;
+      const distanceMi = r.distanceMi as number | null;
+      
       return {
-        date: (r.date as string) || '',
-        durationMin: r.durationMin as number | null,
-        distanceKm: r.distanceKm as number | null,
+        date: datePart,
+        durationMin: durationSec ? Number((durationSec / 60).toFixed(2)) : null,
+        distanceKm: distanceMi ? Number((distanceMi * 1.60934).toFixed(2)) : null,
         avgHr: r.avgHr as number | null,
-        rpe: r.rpe as number | null,
+        rpe: null,
         notes: (r.notes as string) || '',
-        synthInsight: (r.synthInsight as string) || '',
-        synthScore: r.synthScore as number | null,
+        synthInsight: '',
+        synthScore: null,
       };
     });
 }

@@ -53,20 +53,19 @@ export interface SheetSchema {
 // -------------------------------------------------------
 export const TRIATHLON_SCHEMA: SheetSchema = {
   label: 'Triathlon Training',
-  sheetName: 'Sheet1', // Update to actual tab name
+  sheetName: 'activities_raw',
   headerRow: 1,
   dataStartRow: 2,
   columns: [
-    { name: 'Date',         index: 0, field: 'date',        type: 'date'   },
-    { name: 'Duration (min)', index: 1, field: 'durationMin', type: 'number' },
-    { name: 'Distance (km)', index: 2, field: 'distanceKm',  type: 'number' },
-    { name: 'Avg HR',        index: 3, field: 'avgHr',       type: 'number' },
-    { name: 'RPE',           index: 4, field: 'rpe',         type: 'number' },
-    { name: 'Notes',         index: 5, field: 'notes',       type: 'string' },
+    { name: 'Date',          index: 1,  field: 'date',        type: 'string' },
+    { name: 'Duration (sec)',index: 7,  field: 'durationSec', type: 'number' },
+    { name: 'Distance (mi)', index: 10, field: 'distanceMi',  type: 'number' },
+    { name: 'Avg HR',        index: 17, field: 'avgHr',       type: 'number' },
+    { name: 'Notes',         index: 3,  field: 'notes',       type: 'string' },
   ],
   writeBackColumns: {
-    insightColumn: 'G',  // Column 7
-    scoreColumn: 'H',    // Column 8
+    insightColumn: 'A', // Unused during reads for this sheet
+    scoreColumn: 'B',
     insightField: 'synthInsight',
     scoreField: 'synthScore',
   },
