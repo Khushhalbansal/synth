@@ -155,6 +155,41 @@ export async function appendRows(
 ): Promise<void> {
   const client = getClient();
 
+  // Extract tab name from range (e.g. "Synth_Insights!A1" or "'Synth Insights'!A1")
+  const sheetNameMatch = range.match(/^'?(.*?)'?!/);
+  const tabName = sheetNameMatch ? sheetNameMatch[1] : '';
+
+  if (tabName) {
+    const tabs = await listTabs(spreadsheetId);
+    if (!tabs.some(t => t.toLowerCase() === tabName.toLowerCase())) {
+      console.log(`[SHEETS] Creating missing tab "${tabName}" in spreadsheet ${spreadsheetId}...`);
+      await client.spreadsheets.batchUpdate({
+        spreadsheetId,
+        requestBody: {
+          requests: [
+            {
+              addSheet: {
+                properties: { title: tabName }
+              }
+            }
+          ]
+        }
+      });
+
+      // If it's the Synth_Insights tab, write the header row first
+      if (tabName.toLowerCase() === 'synth_insights') {
+        await client.spreadsheets.values.update({
+          spreadsheetId,
+          range: `${tabName}!A1`,
+          valueInputOption: 'USER_ENTERED',
+          requestBody: {
+            values: [['Date', 'Athlete', 'Session', 'Insight', 'Score', 'Generated At']]
+          }
+        });
+      }
+    }
+  }
+
   await client.spreadsheets.values.append({
     spreadsheetId,
     range,
